@@ -1,0 +1,313 @@
+<!--
+Personal Website (single-file)
+Instructions: Save this entire contents as "index.html" and open in a browser.
+This version restores in-site upload features so you can upload profile picture, work images, and gallery images directly from the website UI.
+All uploads are client-side only and saved to localStorage; images never leave your machine.
+Features:
+- Upload profile picture (single image) and preview it immediately.
+- Upload multiple work images (preview thumbnails) stored under WORK_KEY.
+- Upload up to 5 gallery images (preview thumbnails) stored under GALLERY_KEY.
+- Remove individual images or clear all.
+- Previews use DOM creation to maximize compatibility with Data URLs.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Royce Dcunha — Portfolio</title>
+  <style>
+    :root{ --bg:#0f1724; --card:#0b1220; --accent:#7c3aed; --muted:#9aa4b2; --glass: rgba(255,255,255,0.04); --glass-2: rgba(255,255,255,0.02); --radius:14px; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef6}
+    .wrap{min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px;}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav{display:flex;gap:12px}
+    .nav-btn{background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:12px;cursor:pointer}
+    .nav-btn.active{color:#fff;box-shadow:0 8px 30px rgba(124,58,237,0.18);background:linear-gradient(90deg, rgba(124,58,237,0.12), rgba(6,182,212,0.05))}
+    main{flex:1;display:grid;grid-template-columns:1fr 360px;gap:28px;padding:28px}
+    .panel{background:linear-gradient(180deg,var(--card),rgba(10,14,22,0.6));padding:24px;border-radius:var(--radius)}
+    .section{animation:fadeIn .45s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .hero{display:flex;gap:20px;align-items:center}
+    .avatar{width:140px;height:140px;border-radius:18px;background:linear-gradient(180deg,#0b1220,#12202b);display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;overflow:hidden}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);margin:6px 6px 0 0}
+    .card{padding:14px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border:1px solid rgba(255,255,255,0.03)}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:12px}
+    .thumb{position:relative;border-radius:12px;overflow:hidden;background:#081018;padding:6px;display:flex;align-items:center;justify-content:center}
+    .thumb img{display:block;width:100%;height:140px;object-fit:cover}
+    .thumb .remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);border-radius:10px;padding:6px 8px;color:white;cursor:pointer;border:0}
+    .btn{background:var(--accent);border:0;padding:10px 14px;border-radius:12px;color:white}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 12px;border-radius:10px}
+    footer{padding:18px 28px;color:var(--muted);font-size:13px;text-align:center}
+    label.file-label{display:inline-block;padding:10px;border-radius:10px;border:1px dashed rgba(255,255,255,0.04);cursor:pointer}
+    @media (max-width:980px){main{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">RD</div>
+        <div>
+          <h1 style="margin:0">Royce Dcunha</h1>
+          <div style="font-size:12px;color:var(--muted)">Student · Developer · Space enthusiast</div>
+        </div>
+      </div>
+      <nav aria-label="Main navigation">
+        <a class="nav-btn active" href="#home">Home</a>
+        <a class="nav-btn" href="#interests">Interests</a>
+        <a class="nav-btn" href="#work">Work</a>
+        <a class="nav-btn" href="#gallery">Gallery</a>
+        <a class="nav-btn" href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel section" id="home">
+        <div class="hero">
+          <div class="avatar" id="profile-avatar">RD</div>
+          <div>
+            <h2 style="margin:0">Hey — I'm Royce</h2>
+            <p id="one-line" style="color:var(--muted)">I am always curious to learn new things.</p>
+            <div style="margin-top:12px"><button class="btn" onclick="location.href='#work'">See my projects</button></div>
+
+            <div style="margin-top:12px">
+              <label class="file-label">Change profile picture
+                <input id="profile-pic-input" type="file" accept="image/*" style="display:none" />
+              </label>
+              <button class="ghost" id="remove-profile">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+          <div class="card" style="flex:1;min-width:220px">
+            <h3 style="margin-top:0">About me</h3>
+            <p style="color:var(--muted)">I am 18 years old. I am currently doing engineering in Computer Engineering at Fr. CRCE Bandra. I am in my first year and I can speak 5 languages. I enjoy learning and building small projects that merge design and technology.</p>
+            <div style="margin-top:10px">
+              <span class="chip">Age: 18</span>
+              <span class="chip">Languages: 5</span>
+              <span class="chip">College: Fr. CRCE Bandra</span>
+            </div>
+          </div>
+
+          <div class="card" style="width:260px">
+            <h3 style="margin-top:0">Skills & Hobbies</h3>
+            <div style="margin-top:10px">
+              <div class="chip">Story writing</div>
+              <div class="chip">Chess</div>
+              <div class="chip">Public speaking</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel" style="height:fit-content">
+        <div class="card">
+          <h3 style="margin-top:0">Contact</h3>
+          <p style="color:var(--muted);margin:6px 0">Phone: <strong id="phone">8459441374</strong></p>
+          <p style="color:var(--muted);margin:6px 0">Email: <strong id="email">royce.dcunha2007@gmail.com</strong></p>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('phone').textContent).then(()=>alert('Phone copied'))">Copy Phone</button>
+            <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('email').textContent).then(()=>alert('Email copied'))">Copy Email</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin-top:0">Quick stats</h3>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <div style="flex:1;text-align:center"><h3 style="margin:0">3</h3><div style="color:var(--muted)">Projects</div></div>
+            <div style="flex:1;text-align:center"><h3 style="margin:0">0</h3><div style="color:var(--muted)">Achievements</div></div>
+            <div style="flex:1;text-align:center"><h3 style="margin:0">3</h3><div style="color:var(--muted)">Hobbies</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin-top:0">Social</h3>
+          <p style="color:var(--muted)">No social links provided.</p>
+        </div>
+      </aside>
+    </main>
+
+    <section class="panel" id="interests" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Interests & Hobbies</h2>
+      <p style="color:var(--muted)">I enjoy space exploration, chess, and story writing. These interests shape both my learning and personal projects.</p>
+      <h3>Goals</h3>
+      <ul style="color:var(--muted)">
+        <li>Short-term: Participate and win hackathons.</li>
+        <li>Long-term: Build a startup.</li>
+      </ul>
+
+      <h3>Languages</h3>
+      <p style="color:var(--muted)">I speak 5 languages and am continuously learning.</p>
+    </section>
+
+    <section class="panel" id="work" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Work & Projects</h2>
+      <p style="color:var(--muted)">Here are projects and concepts I have worked on or am developing.</p>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">Brookies</h3>
+        <p style="color:var(--muted)">An AI-powered cake customization app — design cakes visually with real-time pricing and delivery options.</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">VistaHomes</h3>
+        <p style="color:var(--muted)">A real-estate exploration app with 3D property renderings and virtual walkthroughs.</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">UrbanOasis</h3>
+        <p style="color:var(--muted)">Smart city concept focusing on sustainable urban systems and digital twin mapping.</p>
+      </div>
+
+      <h3 style="margin-top:16px">Work showcase</h3>
+      <p style="color:var(--muted)">Upload images of your projects below. Images are kept only in your browser (localStorage).</p>
+
+      <div class="card" style="margin-top:12px">
+        <label class="file-label">Upload work images
+          <input id="work-upload" type="file" accept="image/*" multiple style="display:none" />
+        </label>
+        <div class="thumbs" id="work-thumbs" aria-live="polite"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <button class="btn" id="clear-work">Clear images</button>
+          <div style="color:var(--muted);font-size:13px">Images are stored locally in your browser.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="gallery" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Gallery — My Best Pictures</h2>
+      <p style="color:var(--muted)">Upload up to <strong>5</strong> of your best pictures here. Images are stored locally in your browser.</p>
+
+      <div class="card" style="margin-top:12px">
+        <label class="file-label">Upload gallery images (max 5)
+          <input id="gallery-upload" type="file" accept="image/*" multiple style="display:none" />
+        </label>
+        <div class="thumbs" id="gallery-thumbs" aria-live="polite"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+          <button class="btn" id="clear-gallery">Clear gallery</button>
+          <div id="gallery-count" style="color:var(--muted);font-size:13px">0 / 5 uploaded</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="contact" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Contact</h2>
+      <p style="color:var(--muted)">I'm open to collaboration and projects. Reach out via phone or email below.</p>
+      <p style="color:var(--muted)"><strong>Phone:</strong> <span id="contact-phone">8459441374</span></p>
+      <p style="color:var(--muted)"><strong>Email:</strong> <span id="contact-email">royce.dcunha2007@gmail.com</span></p>
+      <div style="margin-top:12px">
+        <button class="btn" onclick="location.href='mailto:royce.dcunha2007@gmail.com'">Email me</button>
+      </div>
+    </section>
+
+    <footer>Built with ❤️ — This is your personal profile site. All uploads are local to your browser.</footer>
+  </div>
+
+  <script>
+    // Smooth navigation for anchor links
+    document.querySelectorAll('a.nav-btn').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault();
+        document.querySelectorAll('a.nav-btn').forEach(x=>x.classList.remove('active'));
+        a.classList.add('active');
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      })
+    });
+
+    // helper: create thumbnail element safely (no innerHTML)
+    function createThumbElement(src){
+      const el = document.createElement('div');
+      el.className = 'thumb';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'uploaded image';
+      img.loading = 'lazy';
+      el.appendChild(img);
+      const btn = document.createElement('button');
+      btn.className = 'remove';
+      btn.type = 'button';
+      btn.textContent = '✕';
+      btn.setAttribute('aria-label','Remove image');
+      el.appendChild(btn);
+      return {el,btn,img};
+    }
+
+    // Profile picture upload
+    const profileInput = document.getElementById('profile-pic-input');
+    const profileAvatar = document.getElementById('profile-avatar');
+    const PROFILE_KEY = 'royce_profile_pic_v2';
+
+    function setProfilePic(src){
+      if(!src){ profileAvatar.textContent = 'RD'; localStorage.removeItem(PROFILE_KEY); return; }
+      profileAvatar.textContent = '';
+      const img = document.createElement('img'); img.src = src; img.alt='Profile'; profileAvatar.appendChild(img);
+      try{ localStorage.setItem(PROFILE_KEY, src); }catch(e){ console.warn('Could not store profile pic (storage limit?)', e); }
+    }
+
+    // load saved profile pic on init
+    (function(){ try{ const src = localStorage.getItem(PROFILE_KEY); if(src) setProfilePic(src); }catch(e){ console.error(e); } })();
+
+    profileInput.addEventListener('change', async (e)=>{
+      const f = e.target.files[0]; if(!f) return; if(!f.type.startsWith('image/')) return alert('Select an image file');
+      const dataUrl = await new Promise(res=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(f); });
+      setProfilePic(dataUrl); profileInput.value='';
+    });
+    document.querySelector('.file-label input#profile-pic-input')?.addEventListener('click', (ev)=>{});
+    document.getElementById('remove-profile').addEventListener('click', ()=>{ if(confirm('Remove profile picture?')) setProfilePic(null); });
+
+    // Work showcase: upload + preview + localStorage
+    const workUpload = document.getElementById('work-upload');
+    const workThumbs = document.getElementById('work-thumbs');
+    const WORK_KEY = 'royce_work_images_v2';
+
+    function loadWorkImages(){ workThumbs.innerHTML=''; try{ const arr = JSON.parse(localStorage.getItem(WORK_KEY)||'[]'); arr.forEach(src=>{ const {el,btn} = createThumbElement(src); btn.addEventListener('click', ()=>{ const cur = JSON.parse(localStorage.getItem(WORK_KEY)||'[]'); const i = cur.indexOf(src); if(i>-1) cur.splice(i,1); localStorage.setItem(WORK_KEY, JSON.stringify(cur)); el.remove(); }); workThumbs.appendChild(el); }); }catch(e){console.error(e);} }
+    loadWorkImages();
+
+    workUpload.addEventListener('change', async (e)=>{
+      const files = Array.from(e.target.files);
+      const arr = JSON.parse(localStorage.getItem(WORK_KEY)||'[]');
+      for(const f of files){ if(!f.type.startsWith('image/')) continue; const dataUrl = await new Promise(res=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(f); }); arr.push(dataUrl); const {el,btn} = createThumbElement(dataUrl); btn.addEventListener('click', ()=>{ const cur = JSON.parse(localStorage.getItem(WORK_KEY)||'[]'); const i = cur.indexOf(dataUrl); if(i>-1) cur.splice(i,1); localStorage.setItem(WORK_KEY, JSON.stringify(cur)); el.remove(); }); workThumbs.appendChild(el); }
+      try{ localStorage.setItem(WORK_KEY, JSON.stringify(arr)); }catch(e){ console.warn('Could not save work images to localStorage (limit?).'); }
+      workUpload.value='';
+    });
+
+    document.getElementById('clear-work').addEventListener('click', ()=>{ if(confirm('Remove all saved work images from this browser?')){ localStorage.removeItem(WORK_KEY); workThumbs.innerHTML=''; } });
+
+    // Gallery: up to 5 images
+    const galleryUpload = document.getElementById('gallery-upload');
+    const galleryThumbs = document.getElementById('gallery-thumbs');
+    const GALLERY_KEY = 'royce_gallery_images_v2';
+    const GALLERY_LIMIT = 5;
+
+    function updateGalleryCount(){ const arr = JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]'); document.getElementById('gallery-count').textContent = `${arr.length} / ${GALLERY_LIMIT} uploaded`; }
+
+    function loadGallery(){ galleryThumbs.innerHTML=''; try{ const arr = JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]'); arr.forEach(src=>{ const {el,btn} = createThumbElement(src); btn.addEventListener('click', ()=>{ const cur = JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]'); const i = cur.indexOf(src); if(i>-1) cur.splice(i,1); localStorage.setItem(GALLERY_KEY, JSON.stringify(cur)); el.remove(); updateGalleryCount(); }); galleryThumbs.appendChild(el); }); updateGalleryCount(); }catch(e){console.error(e);} }
+    loadGallery();
+
+    galleryUpload.addEventListener('change', async (e)=>{
+      const files = Array.from(e.target.files);
+      let arr = JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]');
+      if(arr.length >= GALLERY_LIMIT){ return alert(`Gallery already has ${GALLERY_LIMIT} images. Remove some to add new ones.`); }
+      for(const f of files){ if(!f.type.startsWith('image/')) continue; if(arr.length >= GALLERY_LIMIT) break; const dataUrl = await new Promise(res=>{ const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(f); }); arr.push(dataUrl); const {el,btn} = createThumbElement(dataUrl); btn.addEventListener('click', ()=>{ const cur = JSON.parse(localStorage.getItem(GALLERY_KEY)||'[]'); const i = cur.indexOf(dataUrl); if(i>-1) cur.splice(i,1); localStorage.setItem(GALLERY_KEY, JSON.stringify(cur)); el.remove(); updateGalleryCount(); }); galleryThumbs.appendChild(el); }
+      try{ localStorage.setItem(GALLERY_KEY, JSON.stringify(arr)); }catch(e){ console.warn('Could not save gallery images to localStorage (limit?).'); }
+      galleryUpload.value=''; updateGalleryCount(); });
+
+    document.getElementById('clear-gallery').addEventListener('click', ()=>{ if(confirm('Remove all gallery images from this browser?')){ localStorage.removeItem(GALLERY_KEY); galleryThumbs.innerHTML=''; updateGalleryCount(); } });
+
+    // wire up file-label clicks
+    document.querySelectorAll('label.file-label').forEach(label=>{ const input = label.querySelector('input[type=file]'); if(input){ label.addEventListener('click', ()=>input.click()); } });
+
+    // small helper: set contact from console if needed
+    window.setContact = function(phone,email){ if(phone) document.getElementById('phone').textContent = phone; if(email) document.getElementById('email').textContent = email; document.getElementById('contact-phone').textContent = phone; document.getElementById('contact-email').textContent = email; }
+  </script>
+</body>
+</html>
