@@ -1,0 +1,217 @@
+<!--
+Personal Website (single-file)
+INSTRUCTIONS:
+1) Save this file as index.html.
+2) Place your image files (profile, work, gallery) in the same folder as index.html.
+3) Edit the <img src=""/> attributes below to point to your image filenames (e.g., "profile.jpg", "project1.png").
+
+This version has NO upload UI — images must be added manually in the HTML. It's static, lightweight, and portable.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Royce Dcunha — Portfolio</title>
+  <style>
+    :root{ --bg:#0f1724; --card:#0b1220; --accent:#7c3aed; --muted:#9aa4b2; --glass: rgba(255,255,255,0.04); --glass-2: rgba(255,255,255,0.02); --radius:14px; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg),#071021);color:#e6eef6}
+    .wrap{min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;align-items:center;justify-content:space-between;padding:20px 28px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav{display:flex;gap:12px}
+    .nav-btn{background:transparent;border:0;color:var(--muted);padding:8px 12px;border-radius:12px;cursor:pointer;text-decoration:none}
+    .nav-btn.active{color:#fff;box-shadow:0 8px 30px rgba(124,58,237,0.18);background:linear-gradient(90deg, rgba(124,58,237,0.12), rgba(6,182,212,0.05))}
+    main{flex:1;display:grid;grid-template-columns:1fr 360px;gap:28px;padding:28px}
+    .panel{background:linear-gradient(180deg,var(--card),rgba(10,14,22,0.6));padding:24px;border-radius:var(--radius)}
+    .section{animation:fadeIn .45s ease both}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .hero{display:flex;gap:20px;align-items:center}
+    .avatar{width:140px;height:140px;border-radius:18px;background:linear-gradient(180deg,#0b1220,#12202b);display:flex;align-items:center;justify-content:center;font-size:48px;font-weight:700;overflow:hidden}
+    .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);margin:6px 6px 0 0}
+    .card{padding:14px;border-radius:12px;background:linear-gradient(180deg,var(--glass),var(--glass-2));border:1px solid rgba(255,255,255,0.03)}
+    .thumbs{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:12px}
+    .thumb{border-radius:12px;overflow:hidden;background:#081018;padding:6px;display:flex;align-items:center;justify-content:center}
+    .thumb img{display:block;width:100%;height:140px;object-fit:cover}
+    .btn{background:var(--accent);border:0;padding:10px 14px;border-radius:12px;color:white}
+    footer{padding:18px 28px;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:980px){main{grid-template-columns:1fr}}
+    .note{font-size:13px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">RD</div>
+        <div>
+          <h1 style="margin:0">Royce Dcunha</h1>
+          <div style="font-size:12px;color:var(--muted)">Student · Developer · Space enthusiast</div>
+        </div>
+      </div>
+      <nav aria-label="Main navigation">
+        <a class="nav-btn active" href="#home">Home</a>
+        <a class="nav-btn" href="#interests">Interests</a>
+        <a class="nav-btn" href="#work">Work</a>
+        <a class="nav-btn" href="#gallery">Gallery</a>
+        <a class="nav-btn" href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="panel section" id="home">
+        <div class="hero">
+          <div class="avatar" id="profile-avatar">
+            <!-- Replace the filename below with your profile image file placed alongside index.html -->
+            <img src="pro.jpeg" alt="Royce profile picture" />
+          </div>
+
+          <div>
+            <h2 style="margin:0">Hey — I'm Royce</h2>
+            <p class="note">I am always curious to learn new things.</p>
+            <div style="margin-top:12px"><a class="btn" href="#work">See my projects</a></div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+          <div class="card" style="flex:1;min-width:220px">
+            <h3 style="margin-top:0">About me</h3>
+            <p class="note">I am 18 years old. I am currently doing engineering in Computer Engineering at Fr. CRCE Bandra. I am in my first year and I can speak 5 languages. I enjoy learning and building small projects that merge design and technology.</p>
+            <div style="margin-top:10px">
+              <span class="chip">Age: 18</span>
+              <span class="chip">Languages: 5</span>
+              <span class="chip">College: Fr. CRCE Bandra</span>
+            </div>
+          </div>
+
+          <div class="card" style="width:260px">
+            <h3 style="margin-top:0">Skills & Hobbies</h3>
+            <div style="margin-top:10px">
+              <div class="chip">Story writing</div>
+              <div class="chip">Chess</div>
+              <div class="chip">Public speaking</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel" style="height:fit-content">
+        <div class="card">
+          <h3 style="margin-top:0">Contact</h3>
+          <p class="note" style="margin:6px 0">Phone: <strong id="phone">8459441374</strong></p>
+          <p class="note" style="margin:6px 0">Email: <strong id="email">royce.dcunha2007@gmail.com</strong></p>
+          <div style="margin-top:8px;display:flex;gap:8px">
+            <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('phone').textContent).then(()=>alert('Phone copied'))">Copy Phone</button>
+            <button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('email').textContent).then(()=>alert('Email copied'))">Copy Email</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin-top:0">Quick stats</h3>
+          <div style="display:flex;gap:12px;margin-top:8px">
+            <div style="flex:1;text-align:center"><h3 style="margin:0">3</h3><div class="note">Projects</div></div>
+            <div style="flex:1;text-align:center"><h3 style="margin:0">0</h3><div class="note">Achievements</div></div>
+            <div style="flex:1;text-align:center"><h3 style="margin:0">3</h3><div class="note">Hobbies</div></div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin-top:0">Social</h3>
+          <p class="note">No social links provided.</p>
+        </div>
+      </aside>
+    </main>
+
+    <section class="panel" id="interests" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Interests & Hobbies</h2>
+      <p class="note">I enjoy space exploration, chess, and story writing. These interests shape both my learning and personal projects.</p>
+      <h3>Goals</h3>
+      <ul class="note">
+        <li>Short-term: Participate and win hackathons.</li>
+        <li>Long-term: Build a startup.</li>
+      </ul>
+
+      <h3>Languages</h3>
+      <p class="note">I speak 5 languages and am continuously learning.</p>
+    </section>
+
+    <section class="panel" id="work" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Work & Projects</h2>
+      <p class="note">Here are projects and concepts I have worked on or am developing.</p>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">Brookies</h3>
+        <p class="note">An AI-powered cake customization app — design cakes visually with real-time pricing and delivery options.</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">VistaHomes</h3>
+        <p class="note">A real-estate exploration app with 3D property renderings and virtual walkthroughs.</p>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h3 style="margin-top:0">UrbanOasis</h3>
+        <p class="note">Smart city concept focusing on sustainable urban systems and digital twin mapping.</p>
+      </div>
+
+      <h3 style="margin-top:16px">Work showcase</h3>
+      <p class="note">To include project images, put image files in the same folder as this HTML and update the &lt;img src=""&gt; fields below with their filenames.</p>
+
+      <div class="card" style="margin-top:12px">
+        <div class="thumbs" id="work-thumbs">
+          <!-- Replace project1.jpg, project2.jpg with your actual filenames -->
+          <div class="thumb"><img src="proj.jpeg" alt="project 1" onerror="this.style.opacity=0.25;this.nextElementSibling&&this.nextElementSibling.remove();"/></div>
+          <div class="thumb"><img src="proj2.jpeg" alt="project 2" onerror="this.style.opacity=0.25;this.nextElementSibling&&this.nextElementSibling.remove();"/></div>
+          <div class="thumb"><img src="proj3.jpeg" alt="project 3" onerror="this.style.opacity=0.25;this.nextElementSibling&&this.nextElementSibling.remove();"/></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="gallery" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Gallery — My Best Pictures</h2>
+      <p class="note">Add up to 5 images: place them in the same folder and update the src attributes below with the correct filenames.</p>
+
+      <div class="card" style="margin-top:12px">
+        <div class="thumbs" id="gallery-thumbs">
+          <!-- replace best1.jpg ... best5.jpg with your filenames -->
+          <div class="thumb"><img src="gal1.jpeg" alt="best 1" onerror="this.style.opacity=0.25;"/></div>
+          <div class="thumb"><img src="gal2.jpeg" alt="best 2" onerror="this.style.opacity=0.25;"/></div>
+          <div class="thumb"><img src="gal3.jpeg" alt="best 3" onerror="this.style.opacity=0.25;"/></div>
+          <div class="thumb"><img src="gal4.jpeg" alt="best 4" onerror="this.style.opacity=0.25;"/></div>
+          <div class="thumb"><img src="gal5.jpeg" alt="best 5" onerror="this.style.opacity=0.25;"/></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="contact" style="margin:28px;border-radius:14px;">
+      <h2 style="margin-top:0">Contact</h2>
+      <p class="note">I'm open to collaboration and projects. Reach out via phone or email below.</p>
+      <p class="note"><strong>Phone:</strong> <span id="contact-phone">8459441374</span></p>
+      <p class="note"><strong>Email:</strong> <span id="contact-email">royce.dcunha2007@gmail.com</span></p>
+      <div style="margin-top:12px">
+        <a class="btn" href="mailto:royce.dcunha2007@gmail.com">Email me</a>
+      </div>
+    </section>
+
+    <footer>Built with ❤️ — To add/change images: save them next to this HTML and update the &lt;img src&gt; filenames accordingly.</footer>
+  </div>
+
+  <script>
+    // Smooth navigation for anchor links
+    document.querySelectorAll('.nav-btn').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        e.preventDefault(); document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active')); a.classList.add('active'); const id = a.getAttribute('href').slice(1); const el = document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+      })
+    });
+
+    // Small helper: if you prefer to programmatically set image filenames from console
+    window.setImages = function(profile, projectsArray, galleryArray){ if(profile) document.querySelector('#profile-avatar img').src = profile; if(Array.isArray(projectsArray)){ const p = document.querySelectorAll('#work-thumbs img'); for(let i=0;i<p.length && i<projectsArray.length;i++) p[i].src = projectsArray[i]; } if(Array.isArray(galleryArray)){ const g = document.querySelectorAll('#gallery-thumbs img'); for(let i=0;i<g.length && i<galleryArray.length;i++) g[i].src = galleryArray[i]; } }
+  </script>
+</body>
+</html>
+
+
